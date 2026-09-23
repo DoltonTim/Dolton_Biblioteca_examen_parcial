@@ -33,7 +33,7 @@ class BibliotecaRepositoryFake : BibliotecaRepository {
     }
 
     override fun getCatalogo(): Flow<List<Libro>> = flow {
-        delay(800) // Simulación de carga requerida de 800ms
+        delay(800) // Simulación de carga requerida de 800ms (Req. 3.2)
         if (simularErrorCatalogo) {
             throw IllegalStateException("Error simulado: No se pudo conectar con el catálogo de libros.")
         }

@@ -13,6 +13,7 @@ sealed interface ResultadoPrestamo {
 class SolicitarPrestamoUseCase(
     private val repository: BibliotecaRepository
 ) {
+
     /**
      * Valida y ejecuta la solicitud de un préstamo aplicando estrictamente
      * las reglas de negocio del dominio (RN-01, RN-02, RN-03, RN-04).
@@ -61,9 +62,10 @@ class SolicitarPrestamoUseCase(
             )
         }
 
-        // Si cumple todas las reglas, se registra en el repositorio
-        // En el repositorio se aplica la RN-03:
-        // RN-03: Todo préstamo dura siete días (se fija EstadoPrestamo.Activo con 7 días restantes).
+        // =========================================================================
+        // REGLA DE NEGOCIO RN-03:
+        // Todo préstamo dura siete días (se fija EstadoPrestamo.Activo con 7 días restantes).
+        // =========================================================================
         val nuevoPrestamo = repository.registrarPrestamo(libro)
 
         return ResultadoPrestamo.Exito(
@@ -73,9 +75,12 @@ class SolicitarPrestamoUseCase(
     }
 
     /**
-     * SC-B: Permite leer reactivamente desde el dominio si el estudiante
-     * alcanzó el límite de 3 préstamos activos conforme a la regla RN-01.
+     * Solicitud de Cambio SC-B:
+     * Expone de forma reactiva si el estudiante alcanzó el límite de 3 préstamos
+     * activos conforme a la regla RN-01 centralizada en Dominio.
      */
+
+
     fun limitePrestamosActivosAlcanzado(): kotlinx.coroutines.flow.Flow<Boolean> {
         return repository.getNumeroPrestamosActivos().let { flujo ->
             kotlinx.coroutines.flow.flow {
