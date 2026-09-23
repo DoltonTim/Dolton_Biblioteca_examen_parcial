@@ -92,4 +92,22 @@ class BiblioAndesReglasNegocioTest {
         val librosGestion = obtenerCatalogoUseCase(busqueda = "GESTION").first()
         assertTrue(librosGestion.any { it.titulo == "Gestión de proyectos" })
     }
+
+    @Test
+    fun testSCB_LimitePrestamosActivosAlcanzadoDesdeDominio() = runTest {
+        // En datos semilla hay 2 activos. El límite de 3 NO está alcanzado
+        val limiteInicial = solicitarPrestamoUseCase.limitePrestamosActivosAlcanzado().first()
+        assertEquals(false, limiteInicial)
+
+        // Devolvemos el vencido para poder solicitar sin bloqueo por RN-04
+        repository.devolverPrestamo(5)
+
+        // Solicitamos un 3er libro disponible (Libro 7)
+        val res = solicitarPrestamoUseCase(7)
+        assertIs<ResultadoPrestamo.Exito>(res)
+
+        // Ahora hay 3 activos. El límite de RN-01 se cumple y debe retornar true
+        val limiteAlcanzado = solicitarPrestamoUseCase.limitePrestamosActivosAlcanzado().first()
+        assertEquals(true, limiteAlcanzado)
+    }
 }
