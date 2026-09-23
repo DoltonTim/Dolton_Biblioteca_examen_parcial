@@ -26,7 +26,7 @@ El servicio web que expondrá la API de catálogo se construirá en la segunda u
 
 | Código | Requerimiento | Implementación |
 | :--- | :--- | :--- |
-| **RF-01** | **Pantalla de inicio** | Saludo personalizado al estudiante ("Diego Huamán Ccama"), tarjeta destacada con el préstamo cuya devolución vence primero y accesos rápidos a Catálogo y Préstamos. |
+| **RF-01** | **Pantalla de inicio** | Saludo personalizado al estudiante ("Dolton Tom Meza Arevalo"), tarjeta destacada con el préstamo cuya devolución vence primero y accesos rápidos a Catálogo y Préstamos. |
 | **RF-02** | **Catálogo de libros** | Listado de 12 libros repartidos en 5 categorías (Programación, Matemática, Redes, Gestión, Literatura), con título, autor, año, sede y badge de ejemplares disponibles. Filtrable por chips de categoría. |
 | **RF-03** | **Detalle del libro** | Vista con información completa, acción «Solicitar préstamo» y diálogo de confirmación obligatorio antes del registro. |
 | **RF-04** | **Mis préstamos** | Lista de préstamos ordenada cronológicamente por vencimiento más próximo, filtrable por chips (`Todos`, `Activo`, `Devuelto`, `Vencido`). |
