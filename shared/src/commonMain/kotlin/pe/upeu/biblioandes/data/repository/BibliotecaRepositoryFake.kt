@@ -45,6 +45,10 @@ class BibliotecaRepositoryFake : BibliotecaRepository {
         _prestamos.collect { emit(it) }
     }
 
+    override fun getNumeroPrestamosActivos(): Flow<Int> = _prestamos.map { lista ->
+        lista.count { it.estado is EstadoPrestamo.Activo }
+    }
+
     override fun getLibroPorId(id: Int): Flow<Libro?> = flow {
         _libros.collect { lista ->
             emit(lista.find { it.id == id })

@@ -10,6 +10,7 @@ interface BibliotecaRepository {
     fun getCategorias(): Flow<List<String>>
     fun getCatalogo(): Flow<List<Libro>>
     fun getPrestamos(): Flow<List<Prestamo>>
+    fun getNumeroPrestamosActivos(): Flow<Int>
     fun getLibroPorId(id: Int): Flow<Libro?>
     suspend fun registrarPrestamo(libro: Libro): Prestamo
     suspend fun devolverPrestamo(prestamoId: Int)

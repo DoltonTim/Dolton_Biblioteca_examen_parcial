@@ -71,4 +71,19 @@ class SolicitarPrestamoUseCase(
             mensaje = "Préstamo solicitado exitosamente por 7 días calendario."
         )
     }
+
+    /**
+     * SC-B: Permite leer reactivamente desde el dominio si el estudiante
+     * alcanzó el límite de 3 préstamos activos conforme a la regla RN-01.
+     */
+    fun limitePrestamosActivosAlcanzado(): kotlinx.coroutines.flow.Flow<Boolean> {
+        return repository.getNumeroPrestamosActivos().let { flujo ->
+            kotlinx.coroutines.flow.flow {
+                repository.getPrestamos().collect { lista ->
+                    val activos = lista.count { it.estado is pe.upeu.biblioandes.domain.model.EstadoPrestamo.Activo }
+                    emit(activos >= 3)
+                }
+            }
+        }
+    }
 }
