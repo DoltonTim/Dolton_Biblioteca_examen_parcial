@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +46,8 @@ fun AppNavHost() {
 
     val repository: BibliotecaRepository = koinInject()
     val obtenerPrestamosUseCase: ObtenerPrestamosUseCase = koinInject()
+
+    val prestamosActivos by repository.getNumeroPrestamosActivos().collectAsState(initial = 0)
 
     // Manejo del botón atrás del sistema (RF-07)
     SystemBackHandler(enabled = pilaNavegacion.size > 1) {
@@ -108,10 +112,25 @@ fun AppNavHost() {
                                 selected = seleccionado,
                                 onClick = { navegarA(item.destino) },
                                 icon = {
-                                    Icon(
-                                        imageVector = item.icono,
-                                        contentDescription = item.titulo
-                                    )
+                                    if (item.destino is Destino.Prestamos && prestamosActivos > 0) {
+                                        BadgedBox(
+                                            badge = {
+                                                Badge(containerColor = MaterialTheme.colorScheme.primary) {
+                                                    Text("$prestamosActivos")
+                                                }
+                                            }
+                                        ) {
+                                            Icon(
+                                                imageVector = item.icono,
+                                                contentDescription = item.titulo
+                                            )
+                                        }
+                                    } else {
+                                        Icon(
+                                            imageVector = item.icono,
+                                            contentDescription = item.titulo
+                                        )
+                                    }
                                 },
                                 label = { Text(item.titulo) },
                                 colors = NavigationBarItemDefaults.colors(

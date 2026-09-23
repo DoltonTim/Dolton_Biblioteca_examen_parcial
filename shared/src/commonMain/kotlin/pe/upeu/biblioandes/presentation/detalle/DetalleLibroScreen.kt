@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Category
@@ -261,24 +262,43 @@ fun DetalleLibroScreen(
                         Spacer(modifier = Modifier.height(28.dp))
 
                         // Acción: Solicitar préstamo (RF-03)
+                        val botonHabilitado = !currentState.solicitando && !currentState.limiteAlcanzado && libro.ejemplaresDisponibles > 0
+
                         Button(
                             onClick = {
                                 viewModel.limpiarMensajes()
                                 mostrarDialogoConfirmacion = true
                             },
-                            enabled = !currentState.solicitando,
+                            enabled = botonHabilitado,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(52.dp),
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant
                             )
                         ) {
                             if (currentState.solicitando) {
                                 CircularProgressIndicator(
                                     color = MaterialTheme.colorScheme.onPrimary,
                                     modifier = Modifier.size(24.dp)
+                                )
+                            } else if (currentState.limiteAlcanzado) {
+                                Icon(Icons.Default.Block, contentDescription = null, tint = MaterialTheme.colorScheme.outline)
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Límite de 3 préstamos activos alcanzado (RN-01)",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                            } else if (libro.ejemplaresDisponibles <= 0) {
+                                Icon(Icons.Default.Block, contentDescription = null, tint = MaterialTheme.colorScheme.outline)
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Sin ejemplares disponibles (RN-02)",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.outline
                                 )
                             } else {
                                 Icon(Icons.Default.BookmarkBorder, contentDescription = null)

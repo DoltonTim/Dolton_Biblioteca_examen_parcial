@@ -17,6 +17,7 @@ sealed interface DetalleUiState {
     data class Content(
         val libro: Libro,
         val solicitando: Boolean = false,
+        val limiteAlcanzado: Boolean = false,
         val mensajeExito: String? = null,
         val mensajeError: String? = null
     ) : DetalleUiState
@@ -47,6 +48,16 @@ class DetalleLibroViewModel(
                     }
                 } else {
                     _uiState.value = DetalleUiState.Error("Libro no encontrado en el sistema.")
+                }
+            }
+        }
+
+        // SC-B: Lectura de la regla RN-01 directamente desde el dominio
+        viewModelScope.launch {
+            solicitarPrestamoUseCase.limitePrestamosActivosAlcanzado().collect { limite ->
+                val current = _uiState.value
+                if (current is DetalleUiState.Content) {
+                    _uiState.value = current.copy(limiteAlcanzado = limite)
                 }
             }
         }
